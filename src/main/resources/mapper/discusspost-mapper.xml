@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nowcoder.community.dao.DiscussPostMapper">
+
+    <sql id = "selectFields">
+        id, user_id, title, content, type, status, create_time, comment_count, score
+    </sql>
+
+    <!--如果方法的返回类型是Bean，就需要进行声明返回类型[resultType]，不然解析不出来，会报错-->
+    <!--这是从表中选定帖子进行显示，因为不需要userId作为参数，所以这里用动态SQL来实现，也就是在<if>中进行声明，当参数不是0，也就是有参数的时候，sql语句的形式-->
+    <select id="selectDiscussPosts" resultType="DiscussPost">
+        select <include refid="selectFields"></include>
+        from discuss_post
+        where status != 2
+        <if test = "userId != 0">
+            and user_id = #{userId}
+        </if>
+        <!--注意方法的参数是驼峰式命名，字段是下划线命名，并且我们获取方法的参数需要放到#{}中-->
+        <!--给帖子排序，应该置顶的在前面，所以应该把type倒叙【type是帖子的类型，0表示普通贴，1表示置顶帖，2表示被拉黑】-->
+        <!--如果type一样，就按照创建时间倒叙排序，也就是让后创建的先展示-->
+        order by type desc, create_time desc
+        limit #{offset}, #{limit}
+        <!--分页展示，第几页，一页显示多少个帖子-->
+    </select>
+
+    <select id="selectDiscussPostRows" resultType="int">
+        <!--查询id的数量，使用一个函数count计算-->
+        select count(id)
+        from discuss_post
+        where status != 2
+        <if test = "userId != 0">
+            and user_id = #{userId}
+        </if>
+    </select>
+</mapper>
