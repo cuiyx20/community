@@ -8,6 +8,10 @@
         id, user_id, title, content, type, status, create_time, comment_count, score
     </sql>
 
+    <sql id = "insertFields">
+        user_id, title, content, type, status, create_time, comment_count, score
+    </sql>
+
     <!--如果方法的返回类型是Bean，就需要进行声明返回类型[resultType]，不然解析不出来，会报错-->
     <!--这是从表中选定帖子进行显示，因为不需要userId作为参数，所以这里用动态SQL来实现，也就是在<if>中进行声明，当参数不是0，也就是有参数的时候，sql语句的形式-->
     <select id="selectDiscussPosts" resultType="DiscussPost">
@@ -34,4 +38,19 @@
             and user_id = #{userId}
         </if>
     </select>
+
+    <insert id="insertDiscussPost" parameterType="DiscussPost">
+        insert into discuss_post(<include refid="insertFields"></include>)
+        values(#{userId},#{title},#{content},#{type},#{status},#{createTime},#{commentCount},#{score})
+    </insert>
+
+    <select id="selectDiscussPostById" resultType="DiscussPost">
+        select <include refid="selectFields"></include>
+        from discuss_post
+        where id = #{id}
+    </select>
+
+    <update id="updateCommentCount">
+        update discuss_post set comment_count = #{count} where id = #{id}
+    </update>
 </mapper>

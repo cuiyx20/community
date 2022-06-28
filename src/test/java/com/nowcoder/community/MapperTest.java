@@ -1,8 +1,10 @@
 package com.nowcoder.community;
 
 import com.nowcoder.community.dao.DiscussPostMapper;
+import com.nowcoder.community.dao.LoginTicketMapper;
 import com.nowcoder.community.dao.UserMapper;
 import com.nowcoder.community.entity.DiscussPost;
+import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +24,9 @@ public class MapperTest {
 
     @Autowired
     private DiscussPostMapper discussPostMapper;         //这里使用依赖注入，自动获取Bean给这个变量，之后就可以使用这个变量来进行访问方法
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
 
     @Test
     public void testSelectUser(){
@@ -77,5 +82,48 @@ public class MapperTest {
         int countId = discussPostMapper.selectDiscussPostRows(149);          //这个userId表示是否增加这个用户条件
         System.out.println(countId);
     }
+    @Test
+    public void insertDiscussPost(){
+        DiscussPost discussPost = new DiscussPost();
+        discussPost.setId(281);
+        discussPost.setUserId(151);
+        discussPost.setTitle("乘风破浪的姐姐3三公分组");
+        discussPost.setContent("佳人组：于文文、刘恋、赵梦、唐诗逸、张蔷");
+        discussPost.setType(1);
+        discussPost.setStatus(1);
+        discussPost.setCommentCount(161);
+        discussPost.setCreateTime(new Date(System.currentTimeMillis()));
+        int id = discussPostMapper.insertDiscussPost(discussPost);
+        System.out.println(id);
+    }
+
+    //测试登录mapper
+    //测试插入数据的方法
+    @Test
+    public void testInsertLoginTicket(){
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(101);
+        loginTicket.setTicket("abc");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+
+        loginTicketMapper.insertLoginTicket(loginTicket);
+    }
+
+    //测试查询数据的方法——根据ticket查询
+    @Test
+    public void testSelectByTicket(){
+        /*
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket = loginTicketMapper.selectByTicket("abc");
+         */
+        LoginTicket loginTicket = loginTicketMapper.selectByTicket("abc");
+        System.out.println(loginTicket);
+
+        loginTicketMapper.updateStatus("abc",1);
+        loginTicket = loginTicketMapper.selectByTicket("abc");
+        System.out.println(loginTicket);
+    }
+
 
 }

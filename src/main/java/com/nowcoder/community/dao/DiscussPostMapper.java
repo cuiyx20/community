@@ -15,5 +15,12 @@ public interface DiscussPostMapper {
     //如果需要动态SQL【有些情况下可能不用这个参数，但是有些情况下需要这个参数——动态SQL】，并且方法中只有一个参数的时候，就必须加上这个注解@Param，取别名
     int selectDiscussPostRows(@Param("userId") int userId);        //获取用户的帖子数量
 
+    //发布帖子——增加帖子的方法
+    int insertDiscussPost(DiscussPost discussPost);        //返回增加的帖子所在的行数
 
+    //根据id查询帖子
+    DiscussPost selectDiscussPostById(int id);
+
+    //更新帖子中的评论数量
+    int updateCommentCount(int id,int count);
 }

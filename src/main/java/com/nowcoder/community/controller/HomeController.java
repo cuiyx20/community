@@ -23,7 +23,7 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(path = "index", method = RequestMethod.GET)
+    @RequestMapping(path = "/index", method = RequestMethod.GET)
     public String getIndexPage(Model model, Page page){         //简化版返回动态模板网页的方法 ——不返回ModelAndView类型了，而是返回String类型——动态网页的路径——templates下的index.xml【.xml可以省略】
         page.setRows(discussPostService.findDiscussPostRows(0));
         page.setPath("/index");
@@ -45,5 +45,10 @@ public class HomeController {
         model.addAttribute("discussPosts",discussPosts);
         //方法调用之前，Spring MVC会自动实例化Model和Page，并将Page注入Model，所以在Thymeleaf中可以直接访问page对象的数据，不用自己加到model里
         return "/index";
+    }
+
+    @RequestMapping(path = "/error", method = RequestMethod.GET)
+    public String getErrorPage(){
+        return "/error/500";
     }
 }
